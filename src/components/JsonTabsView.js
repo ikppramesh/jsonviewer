@@ -61,56 +61,68 @@ const DiffDialog = ({ open, onClose, jsonA, jsonB }) => {
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="lg" fullWidth>
-      <DialogTitle>JSON Diff (Side by Side)</DialogTitle>
-      <DialogContent>
+      <DialogTitle sx={{
+        background: '#101014',
+        color: '#00ffe7',
+        fontWeight: 700,
+        textShadow: '0 0 8px #00ffe7',
+        borderBottom: '2px solid #00ffe7',
+      }}>JSON Diff (Side by Side)</DialogTitle>
+      <DialogContent sx={{ background: '#181a1b', p: 0 }}>
         {error ? (
-          <div style={{ color: 'red', whiteSpace: 'pre-wrap' }}>{error}</div>
+          <div style={{ color: '#ff00cc', whiteSpace: 'pre-wrap', padding: 16 }}>{error}</div>
         ) : (
-          <div style={{ display: 'flex', fontFamily: 'monospace', fontSize: 14, background: '#fafafa', padding: 8, overflowX: 'auto' }}>
-            <div style={{ flex: 1, borderRight: '1px solid #ddd', paddingRight: 8 }}>
-              <div style={{ fontWeight: 'bold', marginBottom: 4 }}>JSON 1</div>
+          <div style={{ display: 'flex', fontFamily: 'Fira Mono, Menlo, monospace', fontSize: 14, background: '#181a1b', padding: 8, overflowX: 'auto', color: '#00ffe7' }}>
+            <div style={{ flex: 1, borderRight: '2px solid #00ffe7', paddingRight: 12 }}>
+              <div style={{ fontWeight: 'bold', marginBottom: 4, color: '#00ffe7', textShadow: '0 0 8px #00ffe7' }}>JSON 1</div>
               {leftLines.map((item, idx) => (
                 <div key={idx} style={{
                   display: 'flex',
                   alignItems: 'flex-start',
-                  backgroundColor: item && item.type === 'removed' ? '#ffecec' : item && item.type === 'unchanged' ? 'inherit' : '#fff',
-                  color: item && item.type === 'removed' ? '#b31d28' : 'inherit',
+                  backgroundColor: item && item.type === 'removed' ? '#2d1a1a' : item && item.type === 'unchanged' ? 'inherit' : '#181a1b',
+                  color: item && item.type === 'removed' ? '#ff00cc' : '#00ffe7',
                   textDecoration: item && item.type === 'removed' ? 'line-through' : 'none',
                   minHeight: 20,
                   whiteSpace: 'pre',
-                  fontFamily: 'monospace'
+                  fontFamily: 'Fira Mono, Menlo, monospace',
+                  fontWeight: item && item.type === 'removed' ? 700 : 500,
+                  textShadow: item && item.type === 'removed' ? '0 0 8px #ff00cc' : '0 0 4px #00ffe7',
                 }}>
                   <span style={{
                     display: 'inline-block',
                     width: 32,
-                    color: '#888',
+                    color: '#00ff99',
                     userSelect: 'none',
                     textAlign: 'right',
-                    marginRight: 8
+                    marginRight: 8,
+                    textShadow: '0 0 6px #00ff99',
                   }}>{item && item.line !== undefined ? idx + 1 : ''}</span>
                   <span>{item && item.line}</span>
                 </div>
               ))}
             </div>
-            <div style={{ flex: 1, paddingLeft: 8 }}>
-              <div style={{ fontWeight: 'bold', marginBottom: 4 }}>JSON 2</div>
+            <div style={{ flex: 1, paddingLeft: 12 }}>
+              <div style={{ fontWeight: 'bold', marginBottom: 4, color: '#00ffe7', textShadow: '0 0 8px #00ffe7' }}>JSON 2</div>
               {rightLines.map((item, idx) => (
                 <div key={idx} style={{
                   display: 'flex',
                   alignItems: 'flex-start',
-                  backgroundColor: item && item.type === 'added' ? '#d4fcbc' : item && item.type === 'unchanged' ? 'inherit' : '#fff',
-                  color: item && item.type === 'added' ? '#22863a' : 'inherit',
+                  backgroundColor: item && item.type === 'added' ? '#1a2d1a' : item && item.type === 'unchanged' ? 'inherit' : '#181a1b',
+                  color: item && item.type === 'added' ? '#00ff99' : '#00ffe7',
                   minHeight: 20,
                   whiteSpace: 'pre',
-                  fontFamily: 'monospace'
+                  fontFamily: 'Fira Mono, Menlo, monospace',
+                  fontWeight: item && item.type === 'added' ? 700 : 500,
+                  textShadow: item && item.type === 'added' ? '0 0 8px #00ff99' : '0 0 4px #00ffe7',
                 }}>
                   <span style={{
                     display: 'inline-block',
                     width: 32,
-                    color: '#888',
+                    color: '#00ff99',
                     userSelect: 'none',
                     textAlign: 'right',
-                    marginRight: 8
+                    marginRight: 8,
+                    textShadow: '0 0 6px #00ff99',
                   }}>{item && item.line !== undefined ? idx + 1 : ''}</span>
                   <span>{item && item.line}</span>
                 </div>
@@ -119,8 +131,32 @@ const DiffDialog = ({ open, onClose, jsonA, jsonB }) => {
           </div>
         )}
       </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose}>Close</Button>
+      <DialogActions sx={{
+        background: '#101014',
+        borderTop: '2px solid #00ffe7',
+        boxShadow: '0 -2px 12px #00ffe744',
+        p: 2,
+        display: 'flex',
+        justifyContent: 'flex-end',
+      }}>
+        <Button 
+          onClick={onClose}
+          sx={{
+            color: '#101014',
+            background: 'linear-gradient(90deg, #00ffe7 0%, #00ff99 100%)',
+            fontWeight: 700,
+            textShadow: '0 0 8px #00ffe7',
+            borderRadius: 2,
+            px: 3,
+            boxShadow: '0 0 8px #00ffe7',
+            '&:hover': {
+              background: 'linear-gradient(90deg, #00ff99 0%, #00ffe7 100%)',
+              color: '#101014',
+            },
+          }}
+        >
+          Close
+        </Button>
       </DialogActions>
     </Dialog>
   );
@@ -211,8 +247,12 @@ const JsonTabsView = () => {
   };
 
   return (
-    <Box sx={{ width: '100%' }}>
-      <Tabs value={activeTab} onChange={handleTabChange} aria-label="json tabs">
+    <Box sx={{ width: '100%', color: '#fff' }}>
+      <Tabs value={activeTab} onChange={handleTabChange} aria-label="json tabs" sx={{ color: '#fff',
+        '& .MuiTab-root': { color: '#fff' },
+        '& .Mui-selected': { color: '#fff', fontWeight: 700 },
+        '& .MuiTabs-indicator': { backgroundColor: '#fff' },
+      }}>
         {tabs.map((tab, idx) => (
           <Tab key={idx} label={tab.label} {...a11yProps(idx)} />
         ))}
@@ -221,17 +261,63 @@ const JsonTabsView = () => {
           <Button onClick={handleOpenDiff} sx={{ ml: 2 }} variant="contained" size="small" color="secondary">Compare 1 & 2</Button>
         )}
       </Tabs>
-      <Box sx={{ p: 2 }}>
-        <Toolbar
-          onParse={handleParse}
-          view={tabs[activeTab].view}
-          setView={handleViewChange}
-          disabled={!tabs[activeTab].json}
-        />
-        <JsonInput value={tabs[activeTab].json} onChange={handleJsonChange} onFileLoad={handleFileLoad} />
-        {tabs[activeTab].error && <ErrorAlert message={tabs[activeTab].error} />}
-        {tabs[activeTab].obj && tabs[activeTab].view === 'tree' && <JsonTreeView data={tabs[activeTab].obj} />}
-        {tabs[activeTab].obj && tabs[activeTab].view === 'text' && <JsonTextView data={tabs[activeTab].obj} />}
+      <Box sx={{
+        p: 2,
+        display: 'flex',
+        gap: 2,
+        color: '#fff',
+        flexDirection: { xs: 'column', md: 'row' },
+        height: '100%',
+        minHeight: 0,
+        maxHeight: '100%',
+        flex: 1,
+        overflow: 'hidden',
+      }}>
+        <Box sx={{
+          flex: 1,
+          minWidth: 0,
+          color: '#fff',
+          display: 'flex',
+          flexDirection: 'column',
+          height: '100%',
+          overflow: 'auto',
+        }}>
+          <Toolbar
+            onParse={handleParse}
+            view={tabs[activeTab].view}
+            setView={handleViewChange}
+            disabled={!tabs[activeTab].json}
+          />
+          <JsonInput
+            value={tabs[activeTab].json}
+            onChange={handleJsonChange}
+            onFileLoad={handleFileLoad}
+            sx={{
+              flex: 1,
+              height: '100%',
+              minHeight: 0,
+              maxHeight: '100%',
+              overflow: 'auto',
+              '& textarea': {
+                minHeight: 0,
+                height: '100%',
+                maxHeight: '100%',
+                resize: 'none',
+              },
+            }}
+          />
+        </Box>
+        <Box sx={{
+          flex: 1,
+          minWidth: 0,
+          color: '#fff',
+          height: '100%',
+          overflow: 'auto',
+        }}>
+          {tabs[activeTab].error && <ErrorAlert message={tabs[activeTab].error} />}
+          {tabs[activeTab].obj && tabs[activeTab].view === 'tree' && <JsonTreeView data={tabs[activeTab].obj} />}
+          {tabs[activeTab].obj && tabs[activeTab].view === 'text' && <JsonTextView data={tabs[activeTab].obj} />}
+        </Box>
       </Box>
       <DiffDialog open={diffOpen} onClose={handleCloseDiff} jsonA={tabs[0].json} jsonB={tabs[1].json} />
     </Box>

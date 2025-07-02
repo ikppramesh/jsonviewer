@@ -21,13 +21,30 @@ function JsonInput({ value, onChange, onFileLoad }) {
         label="Paste or type JSON here"
         multiline
         minRows={6}
-        maxRows={16}
+        maxRows={24}
         fullWidth
         value={value}
         onChange={e => onChange(e.target.value)}
         variant="outlined"
         size="small"
-        sx={{ flex: 1 }}
+        sx={{
+          color: '#00ffe7',
+          '& .MuiInputBase-input': {
+            color: '#00ffe7',
+            fontFamily: 'Fira Mono, Menlo, monospace',
+            background: '#181a1b',
+            resize: 'vertical',
+            minHeight: 120,
+            maxHeight: 480,
+            overflow: 'auto',
+          },
+          '& .MuiInputLabel-root': { color: '#00ffe7', textShadow: '0 0 6px #00ffe7' },
+          '& .MuiOutlinedInput-root': {
+            '& fieldset': { borderColor: '#00ffe7', boxShadow: '0 0 8px #00ffe7' },
+            '&:hover fieldset': { borderColor: '#00ff99', boxShadow: '0 0 12px #00ff99' },
+            '&.Mui-focused fieldset': { borderColor: '#00ff99', boxShadow: '0 0 16px #00ff99' },
+          },
+        }}
       />
       <Box>
         <input

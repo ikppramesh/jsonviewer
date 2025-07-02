@@ -14,8 +14,8 @@ const customRender = (ui) => {
   );
 };
 
-test('renders JSON Viewer title', () => {
+test('renders IR Json Viewer title', () => {
   customRender(<App />);
-  const titleElement = screen.getByText(/JSON Viewer/i);
+  const titleElement = screen.getByText(/IR Json Viewer/i);
   expect(titleElement).toBeInTheDocument();
 });

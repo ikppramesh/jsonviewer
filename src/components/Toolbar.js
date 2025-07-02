@@ -20,12 +20,27 @@ function Toolbar({ onParse, view, setView, disabled }) {
         onChange={(_, val) => val && setView(val)}
         size="small"
         aria-label="view mode"
+        sx={{
+          '& .MuiToggleButton-root': {
+            color: '#00ffe7',
+            borderColor: '#00ffe7',
+            background: '#181a1b',
+            transition: 'all 0.2s',
+          },
+          '& .Mui-selected': {
+            color: '#101014',
+            background: 'linear-gradient(90deg, #00ffe7 0%, #00ff99 100%)',
+            fontWeight: 700,
+            boxShadow: '0 0 8px #00ffe7',
+            borderColor: '#00ff99',
+          },
+        }}
       >
         <ToggleButton value="tree" aria-label="Tree View">
-          <FormatListBulletedIcon /> Tree
+          <FormatListBulletedIcon sx={{ color: view === 'tree' ? '#101014' : '#00ffe7', textShadow: view === 'tree' ? '0 0 8px #00ffe7' : 'none' }} /> Tree
         </ToggleButton>
         <ToggleButton value="text" aria-label="Text View">
-          <CodeIcon /> Text
+          <CodeIcon sx={{ color: view === 'text' ? '#101014' : '#00ffe7', textShadow: view === 'text' ? '0 0 8px #00ffe7' : 'none' }} /> Text
         </ToggleButton>
       </ToggleButtonGroup>
     </Stack>
