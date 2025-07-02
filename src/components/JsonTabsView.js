@@ -15,6 +15,7 @@ function a11yProps(index) {
   };
 }
 const DiffDialog = ({ open, onClose, jsonA, jsonB }) => {
+  const [currentDiffIdx, setCurrentDiffIdx] = React.useState(0);
   let left = '';
   let right = '';
   let error = '';
@@ -32,32 +33,51 @@ const DiffDialog = ({ open, onClose, jsonA, jsonB }) => {
     error = (error ? error + '\n' : '') + 'Right JSON invalid: ' + e.message;
   }
   let diff = [];
+  let addedCount = 0;
+  let removedCount = 0;
+  let diffLineIndexes = [];
   if (!error) {
     diff = diffLines(left, right);
   }
 
-  // Prepare side-by-side lines
+  // Prepare side-by-side lines and count added/removed
   let leftLines = [];
   let rightLines = [];
   if (!error) {
+    let lineIdx = 0;
     diff.forEach(part => {
       const lines = part.value.split('\n');
-      // Remove last empty line if present
       if (lines[lines.length - 1] === '') lines.pop();
       lines.forEach(line => {
         if (part.added) {
           leftLines.push('');
           rightLines.push({ line, type: 'added' });
+          addedCount++;
+          diffLineIndexes.push(lineIdx);
         } else if (part.removed) {
           leftLines.push({ line, type: 'removed' });
           rightLines.push('');
+          removedCount++;
+          diffLineIndexes.push(lineIdx);
         } else {
           leftLines.push({ line, type: 'unchanged' });
           rightLines.push({ line, type: 'unchanged' });
         }
+        lineIdx++;
       });
     });
   }
+
+  // Scroll to diff line
+  React.useEffect(() => {
+    if (!error && diffLineIndexes.length > 0) {
+      const idx = diffLineIndexes[currentDiffIdx];
+      const el = document.getElementById(`diff-line-${idx}`);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
+  }, [currentDiffIdx, open]);
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="lg" fullWidth>
@@ -67,7 +87,53 @@ const DiffDialog = ({ open, onClose, jsonA, jsonB }) => {
         fontWeight: 700,
         textShadow: '0 0 8px #00ffe7',
         borderBottom: '2px solid #00ffe7',
-      }}>JSON Diff (Side by Side)</DialogTitle>
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'flex-start',
+        gap: 1,
+      }}>
+        <span style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          JSON Diff (Side by Side)
+          {!error && diffLineIndexes.length > 0 && (
+            <>
+              <Button
+                size="small"
+                variant="outlined"
+                sx={{ minWidth: 32, color: '#00ffe7', borderColor: '#00ffe7', ml: 2 }}
+                onClick={e => {
+                  e.stopPropagation();
+                  setCurrentDiffIdx((prev) => (prev - 1 + diffLineIndexes.length) % diffLineIndexes.length);
+                }}
+                disabled={diffLineIndexes.length === 0}
+                tabIndex={-1}
+              >↑</Button>
+              <Button
+                size="small"
+                variant="outlined"
+                sx={{ minWidth: 32, color: '#00ffe7', borderColor: '#00ffe7' }}
+                onClick={e => {
+                  e.stopPropagation();
+                  setCurrentDiffIdx((prev) => (prev + 1) % diffLineIndexes.length);
+                }}
+                disabled={diffLineIndexes.length === 0}
+                tabIndex={-1}
+              >↓</Button>
+              <span style={{ fontSize: 13, color: '#00ff99', marginLeft: 8 }}>
+                {diffLineIndexes.length > 0 ? `Diff ${currentDiffIdx + 1} of ${diffLineIndexes.length}` : ''}
+              </span>
+            </>
+          )}
+        </span>
+        {!error && (
+          <span style={{ fontSize: 16, fontWeight: 600, color: '#00ff99', textShadow: '0 0 6px #00ff99', marginTop: 4 }}>
+            Difference count is {addedCount + removedCount}
+            <span style={{ fontSize: 14, fontWeight: 500, marginLeft: 16 }}>
+              <span style={{ color: '#00ff99' }}>+{addedCount}</span>
+              <span style={{ color: '#ff00cc', marginLeft: 8 }}>–{removedCount}</span>
+            </span>
+          </span>
+        )}
+      </DialogTitle>
       <DialogContent sx={{ background: '#181a1b', p: 0 }}>
         {error ? (
           <div style={{ color: '#ff00cc', whiteSpace: 'pre-wrap', padding: 16 }}>{error}</div>
@@ -76,7 +142,7 @@ const DiffDialog = ({ open, onClose, jsonA, jsonB }) => {
             <div style={{ flex: 1, borderRight: '2px solid #00ffe7', paddingRight: 12 }}>
               <div style={{ fontWeight: 'bold', marginBottom: 4, color: '#00ffe7', textShadow: '0 0 8px #00ffe7' }}>JSON 1</div>
               {leftLines.map((item, idx) => (
-                <div key={idx} style={{
+                <div key={idx} id={`diff-line-${idx}`} style={{
                   display: 'flex',
                   alignItems: 'flex-start',
                   backgroundColor: item && item.type === 'removed' ? '#2d1a1a' : item && item.type === 'unchanged' ? 'inherit' : '#181a1b',
@@ -87,6 +153,8 @@ const DiffDialog = ({ open, onClose, jsonA, jsonB }) => {
                   fontFamily: 'Fira Mono, Menlo, monospace',
                   fontWeight: item && item.type === 'removed' ? 700 : 500,
                   textShadow: item && item.type === 'removed' ? '0 0 8px #ff00cc' : '0 0 4px #00ffe7',
+                  outline: diffLineIndexes.includes(idx) && diffLineIndexes[currentDiffIdx] === idx ? '2px solid #00ff99' : 'none',
+                  zIndex: diffLineIndexes.includes(idx) && diffLineIndexes[currentDiffIdx] === idx ? 2 : 1,
                 }}>
                   <span style={{
                     display: 'inline-block',
@@ -104,7 +172,7 @@ const DiffDialog = ({ open, onClose, jsonA, jsonB }) => {
             <div style={{ flex: 1, paddingLeft: 12 }}>
               <div style={{ fontWeight: 'bold', marginBottom: 4, color: '#00ffe7', textShadow: '0 0 8px #00ffe7' }}>JSON 2</div>
               {rightLines.map((item, idx) => (
-                <div key={idx} style={{
+                <div key={idx} id={`diff-line-${idx}`} style={{
                   display: 'flex',
                   alignItems: 'flex-start',
                   backgroundColor: item && item.type === 'added' ? '#1a2d1a' : item && item.type === 'unchanged' ? 'inherit' : '#181a1b',
@@ -114,6 +182,8 @@ const DiffDialog = ({ open, onClose, jsonA, jsonB }) => {
                   fontFamily: 'Fira Mono, Menlo, monospace',
                   fontWeight: item && item.type === 'added' ? 700 : 500,
                   textShadow: item && item.type === 'added' ? '0 0 8px #00ff99' : '0 0 4px #00ffe7',
+                  outline: diffLineIndexes.includes(idx) && diffLineIndexes[currentDiffIdx] === idx ? '2px solid #00ff99' : 'none',
+                  zIndex: diffLineIndexes.includes(idx) && diffLineIndexes[currentDiffIdx] === idx ? 2 : 1,
                 }}>
                   <span style={{
                     display: 'inline-block',

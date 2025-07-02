@@ -20,8 +20,7 @@ function JsonInput({ value, onChange, onFileLoad }) {
       <TextField
         label="Paste or type JSON here"
         multiline
-        minRows={6}
-        maxRows={24}
+        minRows={10}
         fullWidth
         value={value}
         onChange={e => onChange(e.target.value)}
@@ -29,20 +28,27 @@ function JsonInput({ value, onChange, onFileLoad }) {
         size="small"
         sx={{
           color: '#00ffe7',
+          '& .MuiInputBase-root': {
+            maxHeight: '60vh',
+            minHeight: 120,
+            overflowY: 'auto',
+            background: '#0a0a0a',
+            borderRadius: 2,
+            border: 'none',
+            boxShadow: 'none',
+          },
           '& .MuiInputBase-input': {
             color: '#00ffe7',
             fontFamily: 'Fira Mono, Menlo, monospace',
-            background: '#181a1b',
+            background: '#0a0a0a',
             resize: 'vertical',
             minHeight: 120,
-            maxHeight: 480,
-            overflow: 'auto',
           },
           '& .MuiInputLabel-root': { color: '#00ffe7', textShadow: '0 0 6px #00ffe7' },
           '& .MuiOutlinedInput-root': {
-            '& fieldset': { borderColor: '#00ffe7', boxShadow: '0 0 8px #00ffe7' },
-            '&:hover fieldset': { borderColor: '#00ff99', boxShadow: '0 0 12px #00ff99' },
-            '&.Mui-focused fieldset': { borderColor: '#00ff99', boxShadow: '0 0 16px #00ff99' },
+            '& fieldset': { border: 'none', boxShadow: 'none' },
+            '&:hover fieldset': { border: 'none', boxShadow: 'none' },
+            '&.Mui-focused fieldset': { border: 'none', boxShadow: 'none' },
           },
         }}
       />
