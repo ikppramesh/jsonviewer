@@ -13,7 +13,8 @@ html, body, #root {
   color: #00ffe7 !important;
   min-height: 300px;
   max-height: 60vh;
-  overflow-y: auto;
+  overflow-y: auto !important;
+  resize: vertical;
 }
 
 /* Remove scroll from the root container to avoid double scroll */
